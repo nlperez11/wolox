@@ -1,4 +1,4 @@
-package com.wolox.wolox;
+package com.wolox.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
