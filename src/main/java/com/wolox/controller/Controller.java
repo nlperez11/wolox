@@ -20,7 +20,8 @@ public class Controller {
     @GetMapping
     public ResponseEntity getUsers() throws IOException, InterruptedException {
         // service.synchronizeUsers();
-        service.synchronizeAlbums();
+        // service.synchronizeAlbums();
+        service.synchronizePhotos();
         return ResponseEntity.ok().build();
     }
 }

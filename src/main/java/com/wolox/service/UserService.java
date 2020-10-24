@@ -3,7 +3,9 @@ package com.wolox.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolox.models.Album;
+import com.wolox.models.Photo;
 import com.wolox.models.User;
+import com.wolox.repository.AlbumRepository;
 import com.wolox.repository.UserRpository;
 import com.wolox.resources.HttpHelper;
 import org.json.JSONArray;
@@ -31,11 +33,10 @@ public class UserService {
     @Autowired
     private UserRpository userRpository;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private AlbumRepository albumRepository;
 
-    public void getUsers() throws IOException, InterruptedException {
-        httpHelper.getUsers();
-    }
+    private ObjectMapper mapper = new ObjectMapper();
 
     public void synchronizeUsers() throws IOException, InterruptedException {
         JSONArray array = new JSONArray(httpHelper.getUsers());
@@ -85,15 +86,47 @@ public class UserService {
         userRpository.findAllById(map.keySet()).forEach(u -> {
             List<Album> albums = map.get(u.getId());
             if (!albums.isEmpty()) {
-                System.out.println("saving " + albums.size() + " albums for the user " + u.getId());
+                System.out.println("storing " + albums.size() + " albums for the user " + u.getId());
                 entityManager.getTransaction().begin();
                 albums.forEach(entityManager::persist);
                 entityManager.flush();
                 entityManager.getTransaction().commit();
-                System.out.println("albums for the user " + u.getId() + " saved");
+                System.out.println("albums for the user " + u.getId() + " stored");
             }
         });
 
+    }
+
+    public void synchronizePhotos() throws IOException, InterruptedException {
+        JSONArray array = new JSONArray(httpHelper.getPhotos());
+        System.out.println(array.length() + " photos to process");
+
+        Map<Integer, List<Photo>> map = StreamSupport.stream(array.spliterator(), false)
+                .map(p -> {
+                    JSONObject object = new JSONObject(p.toString());
+                    Photo photo = new Photo()
+                            .setId(object.getInt("id"))
+                            .setTitle(object.getString("title"))
+                            .setUrl(object.getString("url"))
+                            .setThumbnailUrl(object.getString("thumbnailUrl"))
+                            .setAlbum(new Album().setId(object.getInt("albumId")));
+                    System.out.println("Photo " + photo.getUrl() + " processed");
+                    return photo;
+                })
+                .collect(Collectors.groupingBy(photo -> photo.getAlbum().getId()));
+
+        EntityManager entityManager = emf.getNativeEntityManagerFactory().createEntityManager();
+        albumRepository.findAllById(map.keySet()).forEach(a -> {
+            List<Photo> photos = map.get(a.getId());
+            if (!photos.isEmpty()) {
+                System.out.println("Storing " + photos.size() + " photos for the album " + a.getId());
+                entityManager.getTransaction().begin();
+                photos.forEach(entityManager::persist);
+                entityManager.flush();
+                entityManager.getTransaction().commit();
+                System.out.println("Photos for te album " + a.getId() + " stored");
+            }
+        });
     }
 
 }
