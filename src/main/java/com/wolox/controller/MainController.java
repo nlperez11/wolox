@@ -6,6 +6,7 @@ import com.wolox.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +36,10 @@ public class MainController {
     @GetMapping(path = "/photo")
     public ResponseEntity getPhotos() {
         return ResponseEntity.ok(photoService.getPhotos());
+    }
+
+    @GetMapping(path = "/photo/user/{id}")
+    public ResponseEntity getPhotosByUser(@PathVariable(name = "id") Integer id) {
+        return ResponseEntity.ok(photoService.getPhotosByUser(id));
     }
 }

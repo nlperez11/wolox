@@ -15,4 +15,8 @@ public class PhotoService {
         return repository.findAll();
     }
 
+    public Iterable<Photo> getPhotosByUser(Integer userId) {
+        return repository.findAllByAlbum_User_Id(userId);
+    }
+
 }
