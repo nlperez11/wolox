@@ -1,6 +1,6 @@
 package com.wolox.controller;
 
-import com.wolox.service.UserService;
+import com.wolox.service.SyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import java.io.IOException;
 public class Controller {
 
     @Autowired
-    private UserService service;
+    private SyncService service;
 
     @GetMapping
     public ResponseEntity getUsers() throws IOException, InterruptedException {
         // service.synchronizeUsers();
         // service.synchronizeAlbums();
-        service.synchronizePhotos();
+        // service.synchronizePhotos();
         return ResponseEntity.ok().build();
     }
 }
