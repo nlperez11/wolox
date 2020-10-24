@@ -1,6 +1,7 @@
 package com.wolox.controller;
 
 import com.wolox.service.AlbumService;
+import com.wolox.service.PhotoService;
 import com.wolox.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class MainController {
     @Autowired
     private AlbumService albumService;
 
+    @Autowired
+    private PhotoService photoService;
+
     @GetMapping(path = "/user")
     public ResponseEntity getUsers() {
         return ResponseEntity.ok(userService.getUsers());
@@ -26,5 +30,10 @@ public class MainController {
     @GetMapping(path = "/album")
     public ResponseEntity getAlbums() {
         return ResponseEntity.ok(albumService.getAlbums());
+    }
+
+    @GetMapping(path = "/photo")
+    public ResponseEntity getPhotos() {
+        return ResponseEntity.ok(photoService.getPhotos());
     }
 }
