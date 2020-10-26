@@ -21,7 +21,11 @@ public class AlbumController {
 
     @PostMapping
     public ResponseEntity createSharedAlbum(@Valid @RequestBody AlbumAccessValidator body) throws AlbumAccessException {
-        System.out.println("body = " + body);
         return ResponseEntity.ok(service.createSharedAlbum(body.get()));
+    }
+
+    @PutMapping
+    public ResponseEntity updateSharedAlbum(@Valid @RequestBody AlbumAccessValidator body) throws AlbumAccessException {
+        return ResponseEntity.ok(service.updateSharedAlbum(body.get()));
     }
 }
