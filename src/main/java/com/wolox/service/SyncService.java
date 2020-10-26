@@ -6,7 +6,7 @@ import com.wolox.models.Album;
 import com.wolox.models.Photo;
 import com.wolox.models.User;
 import com.wolox.repository.AlbumRepository;
-import com.wolox.repository.UserRpository;
+import com.wolox.repository.UserRepository;
 import com.wolox.resources.HttpHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ public class SyncService {
     private LocalContainerEntityManagerFactoryBean emf;
 
     @Autowired
-    private UserRpository userRpository;
+    private UserRepository userRpository;
 
     @Autowired
     private AlbumRepository albumRepository;
