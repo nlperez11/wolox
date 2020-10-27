@@ -2,6 +2,7 @@ package com.wolox.service;
 
 import com.wolox.controller.Exception.AlbumAccessException;
 import com.wolox.dto.AlbumAccessDTO;
+import com.wolox.dto.AlbumAccessListDTO;
 import com.wolox.models.Album;
 import com.wolox.models.AlbumAccess;
 import com.wolox.repository.AlbumAccessRepository;
@@ -14,11 +15,11 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class AlbumService {
@@ -39,18 +40,28 @@ public class AlbumService {
         return repository.findAll();
     }
 
-    public List<AlbumAccessDTO> getAlbumPermissions() {
-        return StreamSupport.stream(albumAccessRepository.findAll().spliterator(), false)
-                .map(AlbumAccessDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public Object getUsersByAlbumPermissions(Integer albumId, String permission) {
+    public AlbumAccessListDTO getUsersByAlbumPermissions(Integer albumId, String permission) {
         EntityManager em = emf.getNativeEntityManagerFactory().createEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<AlbumAccess> query = cb.createQuery(AlbumAccess.class);
+
+        CriteriaBuilder queryBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<AlbumAccess> query = queryBuilder.createQuery(AlbumAccess.class);
         Root<AlbumAccess> root = query.from(AlbumAccess.class);
-        return null;
+
+        Predicate[] predicates = new Predicate[2];
+        predicates[0] = queryBuilder.equal(root.get("album").get("id"), albumId);
+        predicates[1] = queryBuilder.and(queryBuilder.isTrue(root.get(permission)));
+
+        query.select(root).where(predicates).orderBy(queryBuilder.asc(root.get("user").get("id")));
+        List<AlbumAccess> list = em.createQuery(query).getResultList();
+        AlbumAccessListDTO dto = new AlbumAccessListDTO();
+
+        if (!list.isEmpty())
+            dto = new AlbumAccessListDTO(
+                    list.get(0).getAlbum(),
+                    list.stream().map(AlbumAccessDTO::new).collect(Collectors.toList())
+            );
+
+        return dto;
     }
 
     public AlbumAccess createSharedAlbum(AlbumAccess albumAccess) throws AlbumAccessException {

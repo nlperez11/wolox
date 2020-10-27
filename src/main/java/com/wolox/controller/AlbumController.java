@@ -21,11 +21,6 @@ public class AlbumController {
     @Autowired
     private AlbumService service;
 
-    @GetMapping
-    public ResponseEntity getAlbumPermission() {
-        return ResponseEntity.ok(service.getAlbumPermissions());
-    }
-
     @GetMapping(path = "/user")
     public ResponseEntity getUsersByPermissionAlbum(@RequestParam(name = "album") Integer albumId,
                                                     @PermissionInterface (enumClass = Permission.class)
