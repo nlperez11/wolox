@@ -2,6 +2,8 @@ package com.wolox.controller;
 
 import com.wolox.controller.Exception.AlbumAccessException;
 import com.wolox.controller.validator.AlbumAccessValidator;
+import com.wolox.controller.validator.Permission;
+import com.wolox.controller.validator.PermissionInterface;
 import com.wolox.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,6 +20,18 @@ public class AlbumController {
 
     @Autowired
     private AlbumService service;
+
+    @GetMapping
+    public ResponseEntity getAlbumPermission() {
+        return ResponseEntity.ok(service.getAlbumPermissions());
+    }
+
+    @GetMapping(path = "/user")
+    public ResponseEntity getUsersByPermissionAlbum(@RequestParam(name = "album") Integer albumId,
+                                                    @PermissionInterface (enumClass = Permission.class)
+                                                    @RequestParam(name = "permission") String permission) {
+        return ResponseEntity.ok(service.getUsersByAlbumPermissions(albumId, permission));
+    }
 
     @PostMapping
     public ResponseEntity createSharedAlbum(@Valid @RequestBody AlbumAccessValidator body) throws AlbumAccessException {

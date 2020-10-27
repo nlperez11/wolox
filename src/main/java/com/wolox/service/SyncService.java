@@ -3,6 +3,7 @@ package com.wolox.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolox.models.Album;
+import com.wolox.models.AlbumAccess;
 import com.wolox.models.Photo;
 import com.wolox.models.User;
 import com.wolox.repository.AlbumRepository;
@@ -88,7 +89,10 @@ public class SyncService {
             if (!albums.isEmpty()) {
                 System.out.println("storing " + albums.size() + " albums for the user " + u.getId());
                 entityManager.getTransaction().begin();
-                albums.forEach(entityManager::persist);
+                albums.forEach(a -> {
+                    entityManager.persist(a);
+                    entityManager.persist(new AlbumAccess().setAlbum(a).setUser(u).setRead(true).setWrite(true));
+                });
                 entityManager.flush();
                 entityManager.getTransaction().commit();
                 System.out.println("albums for the user " + u.getId() + " stored");

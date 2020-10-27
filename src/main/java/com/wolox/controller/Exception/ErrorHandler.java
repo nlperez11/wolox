@@ -6,6 +6,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -19,10 +20,11 @@ public class ErrorHandler {
 
     @ExceptionHandler({
             ConstraintViolationException.class,
-            MethodArgumentNotValidException.class
-
+            MethodArgumentNotValidException.class,
+            MissingServletRequestParameterException.class,
+            javax.validation.ConstraintViolationException.class
     })
-    public ResponseEntity bodyValidatorhandler(Exception e) {
+    public ResponseEntity badRequestHandler(Exception e) {
         return ResponseEntity.badRequest().body(new Response(e.getMessage()));
     }
 
