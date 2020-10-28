@@ -46,4 +46,14 @@ public class HttpHelper {
         return client.send(request, BodyHandlers.ofString()).body();
     }
 
+    public String getComments(String key, String value) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(environment.getProperty("external.api") + "comments" + "?" + key + "=" + value))
+                .GET()
+                .build();
+
+        return client.send(request, BodyHandlers.ofString()).body();
+    }
+
 }

@@ -5,10 +5,13 @@ import lombok.Data;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.io.IOException;
 
 @ControllerAdvice
 public class ErrorHandler {
@@ -26,6 +29,26 @@ public class ErrorHandler {
     })
     public ResponseEntity badRequestHandler(Exception e) {
         return ResponseEntity.badRequest().body(new Response(e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity unprocessableEntityHandler(Exception e) {
+        return ResponseEntity.unprocessableEntity().body(new Response(e.getMessage()));
+    }
+
+    @ExceptionHandler({
+            IOException.class,
+            InterruptedException.class
+    })
+    public ResponseEntity externalApiErrorHandler() {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new Response("An error has received when call external api"));
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity unexpectedErrorHandler() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response("An unexpected error has occurred"));
     }
 
     @Data
