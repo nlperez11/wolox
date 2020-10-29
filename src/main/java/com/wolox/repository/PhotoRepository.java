@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
-    List<Photo> findAllByAlbum_User_Id(Integer id);
+    Iterable<Photo> findAllByAlbum_User_Id(Integer id);
 }
