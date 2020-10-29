@@ -23,7 +23,7 @@ public class AlbumController {
 
     @GetMapping(path = "/user")
     public ResponseEntity getUsersByPermissionAlbum(@RequestParam(name = "album") Integer albumId,
-                                                    @PermissionInterface (enumClass = Permission.class)
+                                                    @PermissionInterface(enumClass = Permission.class)
                                                     @RequestParam(name = "permission") String permission) {
         return ResponseEntity.ok(service.getUsersByAlbumPermissions(albumId, permission));
     }

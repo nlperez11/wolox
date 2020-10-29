@@ -4,10 +4,14 @@ import com.wolox.models.Album;
 import com.wolox.models.AlbumAccess;
 import com.wolox.models.User;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor
+@Accessors(chain = true)
 public class AlbumAccessValidator {
 
     private Integer id;

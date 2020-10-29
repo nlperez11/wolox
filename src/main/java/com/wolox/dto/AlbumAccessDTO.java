@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wolox.models.AlbumAccess;
 import com.wolox.models.User;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@NoArgsConstructor
+@Accessors(chain = true)
 public class AlbumAccessDTO {
 
     private int id;
