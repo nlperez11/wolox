@@ -42,17 +42,16 @@ public class CommentServiceTest {
     private static WireMockServer wireMockServer;
 
     private String name = "name", email = "";
+    private static String mockResponse = new com.wolox.app.mock.Mock().comments();
 
     @BeforeAll
     public static void initMockServer() {
-        System.out.println("START MOCK SERVER");
         wireMockServer = new WireMockServer(8080);
         wireMockServer.start();
     }
 
     @AfterAll
     public static void stopMockServer() {
-        System.out.println("stop mock server");
         wireMockServer.stop();
     }
 
@@ -70,7 +69,7 @@ public class CommentServiceTest {
     public void getCommentByName() throws IOException, InterruptedException {
         when(httpHelper.getComments("name", name)).thenReturn(mockResponse);
 
-        stubFor(get(urlEqualTo(environment.getProperty("external.api") + "?name=" + name))
+        stubFor(get(urlEqualTo(environment.getProperty("external.api") + "comments?name=" + name))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withBody(mockResponse)));
@@ -82,7 +81,7 @@ public class CommentServiceTest {
     public void getCommentByEmail() throws IOException, InterruptedException {
         when(httpHelper.getComments("email", email)).thenReturn(mockResponse);
 
-        stubFor(get(urlEqualTo(environment.getProperty("external.api") + "?email=" + email))
+        stubFor(get(urlEqualTo(environment.getProperty("external.api") + "comments?email=" + email))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withBody(mockResponse)));
@@ -95,28 +94,4 @@ public class CommentServiceTest {
         assertEquals("[]", service.getComments(null, null));
     }
 
-    private String mockResponse = "[" +
-            "[\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 1,\n" +
-            "    \"name\": \"id labore ex et quam laborum\",\n" +
-            "    \"email\": \"Eliseo@gardner.biz\",\n" +
-            "    \"body\": \"laudantium enim quasi est quidem magnam voluptate ipsam eos\\ntempora quo necessitatibus\\ndolor quam autem quasi\\nreiciendis et nam sapiente accusantium\"\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 2,\n" +
-            "    \"name\": \"quo vero reiciendis velit similique earum\",\n" +
-            "    \"email\": \"Jayne_Kuhic@sydney.com\",\n" +
-            "    \"body\": \"est natus enim nihil est dolore omnis voluptatem numquam\\net omnis occaecati quod ullam at\\nvoluptatem error expedita pariatur\\nnihil sint nostrum voluptatem reiciendis et\"\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 3,\n" +
-            "    \"name\": \"odio adipisci rerum aut animi\",\n" +
-            "    \"email\": \"Nikita@garfield.biz\",\n" +
-            "    \"body\": \"quia molestiae reprehenderit quasi aspernatur\\naut expedita occaecati aliquam eveniet laudantium\\nomnis quibusdam delectus saepe quia accusamus maiores nam est\\ncum et ducimus et vero voluptates excepturi deleniti ratione\"\n" +
-            "  }" +
-            "]";
 }

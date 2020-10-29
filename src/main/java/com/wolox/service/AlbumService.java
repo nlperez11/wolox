@@ -13,10 +13,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -51,7 +48,10 @@ public class AlbumService {
         predicates[0] = queryBuilder.equal(root.get("album").get("id"), albumId);
         predicates[1] = queryBuilder.and(queryBuilder.isTrue(root.get(permission)));
 
-        query.select(root).where(predicates).orderBy(queryBuilder.asc(root.get("user").get("id")));
+        Order o = queryBuilder.asc(root.get("user").get("id"));
+        query.select(root);
+        query.where(predicates);
+        query.orderBy(o);
         List<AlbumAccess> list = em.createQuery(query).getResultList();
         AlbumAccessListDTO dto = new AlbumAccessListDTO();
 

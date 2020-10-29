@@ -2,6 +2,7 @@ package com.wolox.app.controller;
 
 import com.google.gson.Gson;
 import com.wolox.controller.AlbumController;
+import com.wolox.controller.Exception.AlbumAccessException;
 import com.wolox.controller.Exception.ErrorHandler;
 import com.wolox.controller.validator.AlbumAccessValidator;
 import com.wolox.dto.AlbumAccessDTO;
@@ -58,8 +59,6 @@ public class AlbumControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    //TODO fail cases
-
     @Test
     public void albumService() {
         assertNotNull(albumService);
@@ -101,6 +100,19 @@ public class AlbumControllerTest {
     }
 
     @Test
+    public void createSharedAlbumNotFound() throws Exception {
+        when(albumService.createSharedAlbum(any())).thenThrow(new AlbumAccessException("not found"));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(url)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json.toJson(this.buildBody(null)));
+
+        mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
+    }
+
+    @Test
     public void updateSharedAlbum() throws Exception {
         when(albumService.updateSharedAlbum(any())).thenReturn(albumAccess);
 
@@ -112,6 +124,19 @@ public class AlbumControllerTest {
 
         mockMvc.perform(requestBuilder).andExpect(status().isOk())
                 .andExpect(res -> assertEquals(json.toJson(albumAccess), res.getResponse().getContentAsString()));
+    }
+
+    @Test
+    public void updateSharedAlbumNotFound() throws Exception {
+        when(albumService.updateSharedAlbum(any())).thenThrow(new AlbumAccessException("not found"));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(url)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json.toJson(this.buildBody(1)));
+
+        mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
     }
 
     private AlbumAccessValidator buildBody(Integer id) {

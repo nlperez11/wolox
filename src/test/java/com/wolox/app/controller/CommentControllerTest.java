@@ -1,5 +1,6 @@
 package com.wolox.app.controller;
 
+import com.wolox.app.mock.Mock;
 import com.wolox.controller.CommentController;
 import com.wolox.controller.Exception.ErrorHandler;
 import com.wolox.service.CommentService;
@@ -36,6 +37,7 @@ public class CommentControllerTest {
     private CommentService service;
 
     private String url = "http://localhost:8080/api/comment";
+    private String commentsMock = new Mock().comments();
 
     @BeforeEach
     public void init() {
@@ -79,30 +81,4 @@ public class CommentControllerTest {
 
         mockMvc.perform(requestBuilder).andExpect(status().isServiceUnavailable());
     }
-
-
-    private String commentsMock = "[" +
-            "[\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 1,\n" +
-            "    \"name\": \"id labore ex et quam laborum\",\n" +
-            "    \"email\": \"Eliseo@gardner.biz\",\n" +
-            "    \"body\": \"laudantium enim quasi est quidem magnam voluptate ipsam eos\\ntempora quo necessitatibus\\ndolor quam autem quasi\\nreiciendis et nam sapiente accusantium\"\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 2,\n" +
-            "    \"name\": \"quo vero reiciendis velit similique earum\",\n" +
-            "    \"email\": \"Jayne_Kuhic@sydney.com\",\n" +
-            "    \"body\": \"est natus enim nihil est dolore omnis voluptatem numquam\\net omnis occaecati quod ullam at\\nvoluptatem error expedita pariatur\\nnihil sint nostrum voluptatem reiciendis et\"\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"postId\": 1,\n" +
-            "    \"id\": 3,\n" +
-            "    \"name\": \"odio adipisci rerum aut animi\",\n" +
-            "    \"email\": \"Nikita@garfield.biz\",\n" +
-            "    \"body\": \"quia molestiae reprehenderit quasi aspernatur\\naut expedita occaecati aliquam eveniet laudantium\\nomnis quibusdam delectus saepe quia accusamus maiores nam est\\ncum et ducimus et vero voluptates excepturi deleniti ratione\"\n" +
-            "  }" +
-            "]";
 }

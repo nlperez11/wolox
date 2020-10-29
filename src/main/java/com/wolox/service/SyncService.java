@@ -32,7 +32,7 @@ public class SyncService {
     private LocalContainerEntityManagerFactoryBean emf;
 
     @Autowired
-    private UserRepository userRpository;
+    private UserRepository userRepository;
 
     @Autowired
     private AlbumRepository albumRepository;
@@ -84,7 +84,7 @@ public class SyncService {
                 .collect(Collectors.groupingBy(album -> album.getUser().getId()));
 
         EntityManager entityManager = emf.getNativeEntityManagerFactory().createEntityManager();
-        userRpository.findAllById(map.keySet()).forEach(u -> {
+        userRepository.findAllById(map.keySet()).forEach(u -> {
             List<Album> albums = map.get(u.getId());
             if (!albums.isEmpty()) {
                 System.out.println("storing " + albums.size() + " albums for the user " + u.getId());

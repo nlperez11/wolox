@@ -1,6 +1,8 @@
 package com.wolox.app.service;
 
 import com.wolox.controller.Exception.AlbumAccessException;
+import com.wolox.dto.AlbumAccessDTO;
+import com.wolox.dto.AlbumAccessListDTO;
 import com.wolox.models.Album;
 import com.wolox.models.AlbumAccess;
 import com.wolox.models.User;
@@ -18,10 +20,18 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,6 +49,36 @@ public class AlbumServiceTest {
     @Mock
     private LocalContainerEntityManagerFactoryBean emf;
 
+    @Mock
+    private EntityManagerFactory factory;
+
+    @Mock
+    private CriteriaBuilder builder;
+
+    @Mock
+    private CriteriaQuery query;
+
+    @Mock
+    private Predicate predicate;
+
+    @Mock
+    private Root root;
+
+    @Mock
+    private Path path;
+
+    @Mock
+    private Order order;
+
+    @Mock
+    private Expression expression;
+
+    @Mock
+    private TypedQuery persistQuery;
+
+    @Mock
+    private EntityManager em;
+
     @InjectMocks
     private AlbumService albumService;
 
@@ -52,7 +92,7 @@ public class AlbumServiceTest {
         MockitoAnnotations.initMocks(this);
         this.user = new User().setId(id);
         this.album = new Album().setId(id);
-        this.albumAccess = new AlbumAccess().setAlbum(album).setUser(user).setRead(true).setWrite(false);
+        this.albumAccess = new AlbumAccess().setId(1).setAlbum(album).setUser(user).setRead(true).setWrite(false);
     }
 
     @Test
@@ -77,7 +117,31 @@ public class AlbumServiceTest {
 
     @Test
     public void getUsersByAlbumPermissions() {
-        //TODO
+
+        List<AlbumAccess> list = Arrays.asList(albumAccess, albumAccess, albumAccess, albumAccess);
+        when(emf.getNativeEntityManagerFactory()).thenReturn(factory);
+        when(emf.getNativeEntityManagerFactory().createEntityManager()).thenReturn(em);
+        when(em.getCriteriaBuilder()).thenReturn(builder);
+        when(builder.createQuery(AlbumAccess.class)).thenReturn(query);
+        when(query.from(AlbumAccess.class)).thenReturn(root);
+        when(builder.equal(expression, album.getId())).thenReturn(predicate);
+        when(builder.and(predicate)).thenReturn(predicate);
+        when(root.get(anyString())).thenReturn(path);
+
+
+        when(query.select(root)).thenReturn(query);
+        when(query.where(predicate)).thenReturn(query);
+        when(builder.asc(expression)).thenReturn(order);
+        when(query.orderBy(order)).thenReturn(query);
+        when(em.createQuery(query)).thenReturn(persistQuery);
+        when(persistQuery.getResultList()).thenReturn(list);
+
+        AlbumAccessListDTO dto = new AlbumAccessListDTO(
+                album,
+                list.stream().map(AlbumAccessDTO::new).collect(Collectors.toList())
+        );
+
+        assertEquals(dto, albumService.getUsersByAlbumPermissions(album.getId(), "read"));
     }
 
     @Test
