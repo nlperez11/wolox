@@ -11,6 +11,8 @@ import com.wolox.repository.UserRepository;
 import com.wolox.resources.HttpHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
@@ -39,10 +41,12 @@ public class SyncService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    private static Logger logger = LoggerFactory.getLogger(SyncService.class);
+
     public void synchronizeUsers() throws IOException, InterruptedException {
         JSONArray array = new JSONArray(httpHelper.getUsers());
         EntityManager entityManager = emf.getNativeEntityManagerFactory().createEntityManager();
-        System.out.println(array.length() + " users to process");
+        logger.info(array.length() + " users to process");
         try {
             entityManager.getTransaction().begin();
 
@@ -50,24 +54,25 @@ public class SyncService {
                 try {
                     User usr = mapper.readValue(u.toString(), User.class);
                     entityManager.persist(usr);
-                    System.out.println("User " + usr.getId() + " processed");
+                    logger.info("User " + usr.getId() + " processed");
                 } catch (JsonProcessingException e) {
-                    System.out.println(e.getMessage());
+                    logger.error("Error processing the user");
+                    logger.error(e.getMessage());
                 }
             });
 
             entityManager.flush();
             entityManager.getTransaction().commit();
-            System.out.println("End process");
+            logger.info("End process");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
 
     }
 
     public void synchronizeAlbums() throws IOException, InterruptedException {
         JSONArray array = new JSONArray(httpHelper.getAlbums());
-        System.out.println(array.length() + " albums to process");
+        logger.info(array.length() + " albums to process");
 
         Map<Integer, List<Album>> map = StreamSupport.stream(array.spliterator(), false)
                 .map(a -> {
@@ -78,7 +83,7 @@ public class SyncService {
                             .setTitle(object.getString("title"))
                             .setUser(new User().setId(object.getInt("userId")));
 
-                    System.out.println("Album " + album.getId() + " processed");
+                    logger.info("Album " + album.getId() + " processed");
                     return album;
                 })
                 .collect(Collectors.groupingBy(album -> album.getUser().getId()));
@@ -87,7 +92,7 @@ public class SyncService {
         userRepository.findAllById(map.keySet()).forEach(u -> {
             List<Album> albums = map.get(u.getId());
             if (!albums.isEmpty()) {
-                System.out.println("storing " + albums.size() + " albums for the user " + u.getId());
+                logger.info("storing " + albums.size() + " albums for the user " + u.getId());
                 entityManager.getTransaction().begin();
                 albums.forEach(a -> {
                     entityManager.persist(a);
@@ -95,7 +100,7 @@ public class SyncService {
                 });
                 entityManager.flush();
                 entityManager.getTransaction().commit();
-                System.out.println("albums for the user " + u.getId() + " stored");
+                logger.info("albums for the user " + u.getId() + " stored");
             }
         });
 
@@ -103,7 +108,7 @@ public class SyncService {
 
     public void synchronizePhotos() throws IOException, InterruptedException {
         JSONArray array = new JSONArray(httpHelper.getPhotos());
-        System.out.println(array.length() + " photos to process");
+        logger.info(array.length() + " photos to process");
 
         Map<Integer, List<Photo>> map = StreamSupport.stream(array.spliterator(), false)
                 .map(p -> {
@@ -114,7 +119,7 @@ public class SyncService {
                             .setUrl(object.getString("url"))
                             .setThumbnailUrl(object.getString("thumbnailUrl"))
                             .setAlbum(new Album().setId(object.getInt("albumId")));
-                    System.out.println("Photo " + photo.getUrl() + " processed");
+                    logger.info("Photo " + photo.getUrl() + " processed");
                     return photo;
                 })
                 .collect(Collectors.groupingBy(photo -> photo.getAlbum().getId()));
@@ -123,12 +128,12 @@ public class SyncService {
         albumRepository.findAllById(map.keySet()).forEach(a -> {
             List<Photo> photos = map.get(a.getId());
             if (!photos.isEmpty()) {
-                System.out.println("Storing " + photos.size() + " photos for the album " + a.getId());
+                logger.info("Storing " + photos.size() + " photos for the album " + a.getId());
                 entityManager.getTransaction().begin();
                 photos.forEach(entityManager::persist);
                 entityManager.flush();
                 entityManager.getTransaction().commit();
-                System.out.println("Photos for te album " + a.getId() + " stored");
+                logger.info("Photos for te album " + a.getId() + " stored");
             }
         });
 

@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "ff5cf853-9081-4162-ad9b-316e49c89443",
+		"name": "wolox-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all photos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/photo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"photo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Albums",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/album",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"album"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get photos by user id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/photo/user/10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"photo",
+						"user",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Album permissions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"userId\": 1,\r\n    \"albumId\": 15,\r\n    \"read\": true,\r\n    \"write\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/album/access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"album",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update album permisions",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 2,\r\n    \"albumId\": 15,\r\n    \"write\": false,\r\n    \"read\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/album/access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"album",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get users by album and permission",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/album/access/user?album=15&permission=write",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"album",
+						"access",
+						"user"
+					],
+					"query": [
+						{
+							"key": "album",
+							"value": "15"
+						},
+						{
+							"key": "permission",
+							"value": "write"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Album access",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/album/access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"album",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get comments by name or Email",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/comment?name=id labore ex et quam laborum&email=Dallas@ole.me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"comment"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "id labore ex et quam laborum"
+						},
+						{
+							"key": "email",
+							"value": "Dallas@ole.me"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
