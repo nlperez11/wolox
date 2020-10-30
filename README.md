@@ -14,15 +14,15 @@ The tecnologies used in this app are:
 * [Java v11] - Programming Language base.
 * [SpringBoot v2.3.4.RELEASE] - The powerfull java framework for web apps.
 * [JPA] - ORM based in Hibernate
-* [Gradle v6.6.1] - as Dependency management and app runner
+* [Gradle v6.6.1] - As Dependency management and app runner
 * [Postgresql] - Relational DB
 * [Junit] - For Unit testing
 
 ### Installation
 
-This app requires [Java](https://nodejs.org/) v11+ to run.
-Create database with the same name to properties file. (wolox)
-Install the dependencies and start the server.
+* This app requires [Java](https://www.java.com/es/download/) v11+ to run.
+* Create database with the same name to properties file. (wolox)
+* Install the dependencies and start the server.
 
 Windows
 ```sh
