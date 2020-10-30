@@ -20,7 +20,7 @@ The tecnologies used in this app are:
 
 ### Installation
 
-Dillinger requires [Java](https://nodejs.org/) v11+ to run.
+This app requires [Java](https://nodejs.org/) v11+ to run.
 Create database with the same name to properties file. (wolox)
 Install the dependencies and start the server.
 
